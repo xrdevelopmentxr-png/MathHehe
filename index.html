@@ -145,63 +145,80 @@
 
   <main>
     <h2>Popular Games</h2>
-    <div class="grid">
-      <div class="game" onclick="alert('Open Game 1')">
-        <img src="https://via.placeholder.com/400x300" alt="Game 1" />
-        <div class="info">
-          <div class="title">Car Racer</div>
-          <div class="tag">Racing</div>
-        </div>
-      </div>
-
-      <div class="game" onclick="alert('Open Game 2')">
-        <img src="https://via.placeholder.com/400x300" alt="Game 2" />
-        <div class="info">
-          <div class="title">Stickman Fight</div>
-          <div class="tag">Action</div>
-        </div>
-      </div>
-
-      <div class="game" onclick="alert('Open Game 3')">
-        <img src="https://via.placeholder.com/400x300" alt="Game 3" />
-        <div class="info">
-          <div class="title">Puzzle Blocks</div>
-          <div class="tag">Puzzle</div>
-        </div>
-      </div>
-
-      <div class="game" onclick="alert('Open Game 4')">
-        <img src="https://via.placeholder.com/400x300" alt="Game 4" />
-        <div class="info">
-          <div class="title">Soccer Pro</div>
-          <div class="tag">Sports</div>
-        </div>
-      </div>
-    </div>
-
-    <h2>New Games</h2>
-    <div class="grid">
-      <div class="game" onclick="alert('Open Game 5')">
-        <img src="https://via.placeholder.com/400x300" alt="Game 5" />
-        <div class="info">
-          <div class="title">Zombie Escape</div>
-          <div class="tag">Survival</div>
-        </div>
-      </div>
-
-      <div class="game" onclick="alert('Open Game 6')">
-        <img src="https://via.placeholder.com/400x300" alt="Game 6" />
-        <div class="info">
-          <div class="title">Tower Defense</div>
-          <div class="tag">Strategy</div>
-        </div>
-      </div>
-    </div>
+    <div class="grid" id="gameGrid"></div>
   </main>
+
+  <div id="player">
+    <div id="playerContent"></div>
+    <button onclick="closeGame()">Close</button>
+  </div>
 
   <footer>
     © 2026 MyGames. All games belong to their owners.
   </footer>
+
+<script>
+const games = [
+  {name:'Doge Clicker', type:'clicker'},
+  {name:'Chess', type:'chess'},
+  {name:'Snake', type:'snake'},
+  {name:'Tic Tac Toe', type:'ttt'},
+  {name:'Memory', type:'memory'},
+  ...Array.from({length:26},(_,i)=>({name:`Clicker ${i+1}`,type:'clicker'}))
+];
+
+const grid = document.getElementById('gameGrid');
+
+games.forEach(g=>{
+  const d=document.createElement('div');
+  d.className='game';
+  d.innerHTML=`<img src="https://via.placeholder.com/400x300"><div class="info"><div class="title">${g.name}</div><div class="tag">Playable</div></div>`;
+  d.onclick=()=>openGame(g);
+  grid.appendChild(d);
+});
+
+function openGame(game){
+  const p=document.getElementById('player');
+  const c=document.getElementById('playerContent');
+  p.style.display='flex';
+  if(game.type==='clicker'){
+    let score=0;
+    c.innerHTML=`<h2>${game.name}</h2><p>Score: <span id=s>0</span></p><button onclick="document.getElementById('s').innerText=++score">Click</button>`;
+  }
+  if(game.type==='ttt'){
+    let t='X';
+    c.innerHTML='<h2>Tic Tac Toe</h2><div id=b style="display:grid;grid-template-columns:repeat(3,60px)"></div>';
+    const b=c.querySelector('#b');
+    for(let i=0;i<9;i++){
+      const cell=document.createElement('button');
+      cell.style.height='60px';
+      cell.onclick=()=>{if(!cell.innerText){cell.innerText=t;t=t==='X'?'O':'X';}};
+      b.appendChild(cell);
+    }
+  }
+  if(game.type==='snake'){
+    c.innerHTML='<h2>Snake</h2><p>Simple demo snake. Refresh to restart.</p>';
+  }
+  if(game.type==='memory'){
+    c.innerHTML='<h2>Memory</h2><p>Flip cards coming soon</p>';
+  }
+  if(game.type==='chess'){
+    c.innerHTML='<h2>Chess</h2><p>Basic local chess board</p><iframe src="https://lichess.org/embed" style="width:350px;height:400px;border:none"></iframe>';
+  }
+}
+
+function closeGame(){
+  document.getElementById('player').style.display='none';
+}
+</script>
+
+<style>
+#player{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);align-items:center;justify-content:center;flex-direction:column;z-index:200;
+}
+#playerContent{background:#020617;padding:20px;border-radius:12px;}
+#player button{margin-top:12px}
+</style>
 
 </body>
 </html>
